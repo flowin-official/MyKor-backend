@@ -40,6 +40,7 @@ const getAllUsersHandler = async (req, res) => {
   timeLog('[GET][/users] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
 };
 
+// -------------getUserByIdHandler---------------
 /**
  * @swagger
  * /users/{userId}:
@@ -61,7 +62,7 @@ const getAllUsersHandler = async (req, res) => {
  *       500:
  *         description: Internal server error
  */
-
+// -------------getUserByIdHandler---------------
 
 const getUserByIdHandler = async (req, res) => {
   const userId = req.params.userId;
@@ -81,7 +82,7 @@ const getUserByIdHandler = async (req, res) => {
 
   res.send(results);
   consoleBar();
-  timeLog('[GET][/users] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
+  timeLog('[GET][/users/:userId] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
 };
 
 export { getAllUsersHandler, getUserByIdHandler };
