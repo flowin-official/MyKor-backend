@@ -1,6 +1,6 @@
 import express from 'express';
 import { ping } from '../controller/system.js';
-import { getAllUsersHandler } from '../controller/handler/user-handler.js';
+import { getAllUsersHandler, getUserByIdHandler } from '../controller/handler/user-handler.js';
 
 const setupRoutes = (app) => {
   const router = express.Router();
@@ -8,6 +8,7 @@ const setupRoutes = (app) => {
   router.route('/ping').get(ping);
   
   router.route('/users').get(getAllUsersHandler);
+  router.route('/users/:userId').get(getUserByIdHandler);
 
   app.use('/mykor/api/v1', router);
 };
