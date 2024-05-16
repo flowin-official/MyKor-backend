@@ -19,6 +19,8 @@ import { consoleBar, resSend, timeLog } from '../../config/common.js';
  *         description: User not found
  *       500:
  *         description: Internal server error
+ *     tags:
+ *       - users
  */
 // -------------getAllUsersHandler---------------
 
@@ -61,6 +63,8 @@ const getAllUsersHandler = async (req, res) => {
  *         description: User not found
  *       500:
  *         description: Internal server error
+ *     tags:
+ *       - users
  */
 // -------------getUserByIdHandler---------------
 

@@ -1,5 +1,5 @@
 'use strict';
-import dotenv from 'dotenv';
+import dotenv, { config } from 'dotenv';
 dotenv.config();
 
 import { getAllPosts, getPostByLocationId, getPostByUserId } from '../../lib/repository/post-repository.js';
@@ -10,15 +10,30 @@ import { consoleBar, resSend, timeLog } from '../../config/common.js';
  * @swagger
  * /posts:
  *   get:
- *     summary: 모든 게시글 정보 리턴
- *     description: 모든 게시글 정보 리턴
+ *     summary: 모든 게시글 정보 리턴 (페이징 지원)
+ *     description: 지정된 페이지와 단위 수에 맞게 게시글 정보를 리턴합니다. 입력하지 않으면 다 불러옵니다.
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         description: 가져올 페이지 번호 (필수)
+ *         required: false
+ *         type: integer
+ *         minimum: 1
+ *       - in: query
+ *         name: unit
+ *         description: 페이지당 게시글 수 (필수, 최대 1000)
+ *         required: false
+ *         type: integer
+ *         maximum: 1000
  *     responses:
  *       200:
- *         description: List of users retrieved successfully
- *       404:
- *         description: User not found
+ *         description: List of posts retrieved successfully
+ *       400:
+ *         description: Bad request (e.g., invalid unit value)
  *       500:
  *         description: Internal server error
+ *     tags:
+ *       - posts
  */
 // -------------getAllPostsHandler---------------
 
@@ -28,8 +43,21 @@ const getAllPostsHandler = async (req, res) => {
   results.error = [];
   results.posts = [];
 
+
+  const page = parseInt(req.query.page);
+  const unit = parseInt(req.query.unit);
+
+  const skip = (page - 1) * unit;
+
+  if (unit > 1000) {
+    results.result = false;
+    results.error.push('Unit value cannot exceed 1000');
+    res.status(400).send(results);
+    return;
+  }
+
   try {
-    await getAllPosts(results);
+    await getAllPosts(results, skip, unit);
   } catch (err) {
     results.result = false;
     results.error.push('Handler Error');
@@ -61,7 +89,9 @@ const getAllPostsHandler = async (req, res) => {
  *         description: User not found or no posts associated with the user
  *       500:
  *         description: Internal server error
- */
+ *     tags:
+ *       - posts 
+*/
 
 // -------------getPostByLocationIdHandler---------------
 
@@ -108,6 +138,8 @@ const getPostByLocationIdHandler = async (req, res) => {
  *         description: User not found or no posts associated with the user
  *       500:
  *         description: Internal server error
+  *     tags:
+ *       - users
  */
 
 // -------------getPostByUserIdHandler---------------
