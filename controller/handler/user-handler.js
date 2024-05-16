@@ -55,7 +55,7 @@ const getAllUsersHandler = async (req, res) => {
  *         schema:
  *           type: string
  *         required: true
- *         description: ID of the user to retrieve
+ *         description: 유저 Id
  *     responses:
  *       200:
  *         description: User information retrieved successfully

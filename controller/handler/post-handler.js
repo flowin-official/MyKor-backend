@@ -15,13 +15,13 @@ import { consoleBar, resSend, timeLog } from '../../config/common.js';
  *     parameters:
  *       - in: query
  *         name: page
- *         description: 가져올 페이지 번호 (필수)
+ *         description: 가져올 페이지 번호
  *         required: false
  *         type: integer
  *         minimum: 1
  *       - in: query
  *         name: unit
- *         description: 페이지당 게시글 수 (필수, 최대 1000)
+ *         description: 페이지당 게시글 수 (최대 1000)
  *         required: false
  *         type: integer
  *         maximum: 1000
@@ -73,15 +73,27 @@ const getAllPostsHandler = async (req, res) => {
  * @swagger
  * /posts/{locationId}:
  *   get:
- *     summary: 특정 지역의 게시글 리턴
- *     description: 특정 지역의 게시글 리턴
+ *     summary: 특정 지역의 게시글 리턴 (페이징 지원)
+ *     description: 지정된 페이지와 단위 수에 맞게 특정 지역의 게시글 정보를 리턴합니다. 입력하지 않으면 다 불러옵니다.
  *     parameters:
  *       - in: path
  *         name: locationId
  *         schema:
  *           type: string
  *         required: true
- *         description: ID of the user whose posts to retrieve
+ *         description: 지역 Id
+ *       - in: query
+ *         name: page
+ *         description: 가져올 페이지 번호 
+ *         required: false
+ *         type: integer
+ *         minimum: 1
+ *       - in: query
+ *         name: unit
+ *         description: 페이지당 게시글 수 (최대 1000)
+ *         required: false
+ *         type: integer
+ *         maximum: 1000
  *     responses:
  *       200:
  *         description: List of posts retrieved successfully
@@ -104,8 +116,20 @@ const getPostByLocationIdHandler = async (req, res) => {
   results.error = [];
   results.posts = [];
 
+  const page = parseInt(req.query.page);
+  const unit = parseInt(req.query.unit);
+
+  const skip = (page - 1) * unit;
+
+  if (unit > 1000) {
+    results.result = false;
+    results.error.push('Unit value cannot exceed 1000');
+    res.status(400).send(results);
+    return;
+  }
+
   try {
-    await getPostByLocationId(results, locationId);
+    await getPostByLocationId(results, locationId, skip, unit);
   } catch (err) {
     results.result = false;
     results.error.push('Handler Error');
@@ -130,7 +154,7 @@ const getPostByLocationIdHandler = async (req, res) => {
  *         schema:
  *           type: string
  *         required: true
- *         description: ID of the user whose posts to retrieve
+ *         description: 게시글 Id
  *     responses:
  *       200:
  *         description: List of posts retrieved successfully
