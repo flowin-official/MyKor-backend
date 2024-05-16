@@ -11,8 +11,7 @@ const setupRoutes = (app) => {
   router.route('/users').get(getAllUsersHandler);
   router.route('/users/:userId').get(getUserByIdHandler);
   router.route('/users/:userId/posts').get(getPostByUserIdHandler);
-  router.route('/users/:userId/posts/:postId').get(getPostInfoByUserIdPostIdHandler);
-
+  
   app.use('/mykor/api/v1', router);
 };
 
