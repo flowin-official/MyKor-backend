@@ -2,7 +2,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { getAllPosts, getPostByUserId } from '../../lib/repository/post-repository.js';
+import { getAllPosts, getPostByLocationId, getPostByUserId } from '../../lib/repository/post-repository.js';
 import { consoleBar, resSend, timeLog } from '../../config/common.js';
 
 // -------------getAllPostsHandler---------------
@@ -38,6 +38,52 @@ const getAllPostsHandler = async (req, res) => {
   res.send(results);
   consoleBar();
   timeLog('[GET][/posts] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
+};
+
+// -------------getPostByLocationIdHandler---------------
+/**
+ * @swagger
+ * /posts/{locationId}:
+ *   get:
+ *     summary: 특정 지역의 게시글 리턴
+ *     description: 특정 지역의 게시글 리턴
+ *     parameters:
+ *       - in: path
+ *         name: locationId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of the user whose posts to retrieve
+ *     responses:
+ *       200:
+ *         description: List of posts retrieved successfully
+ *       404:
+ *         description: User not found or no posts associated with the user
+ *       500:
+ *         description: Internal server error
+ */
+
+// -------------getPostByLocationIdHandler---------------
+
+
+const getPostByLocationIdHandler = async (req, res) => {
+  const locationId = req.params.locationId;
+
+  const results = {};
+  results.result = true;
+  results.error = [];
+  results.posts = [];
+
+  try {
+    await getPostByLocationId(results, locationId);
+  } catch (err) {
+    results.result = false;
+    results.error.push('Handler Error');
+  }
+
+  res.send(results);
+  consoleBar();
+  timeLog('[GET][/posts/:locationId] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
 };
 
 
@@ -87,4 +133,4 @@ const getPostByUserIdHandler = async (req, res) => {
   timeLog('[GET][/users/:userId/posts] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
 };
 
-export { getAllPostsHandler, getPostByUserIdHandler };
+export { getAllPostsHandler, getPostByLocationIdHandler, getPostByUserIdHandler };

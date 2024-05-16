@@ -1,7 +1,7 @@
 import express from 'express';
 import { ping } from '../controller/system.js';
 import { getAllUsersHandler, getUserByIdHandler } from '../controller/handler/user-handler.js';
-import { getAllPostsHandler, getPostByUserIdHandler } from '../controller/handler/post-handler.js';
+import { getAllPostsHandler, getPostByLocationIdHandler, getPostByUserIdHandler } from '../controller/handler/post-handler.js';
 
 const setupRoutes = (app) => {
   const router = express.Router();
@@ -13,6 +13,7 @@ const setupRoutes = (app) => {
   router.route('/users/:userId/posts').get(getPostByUserIdHandler);
 
   router.route('/posts').get(getAllPostsHandler);
+  router.route('/posts/:locationId').get(getPostByLocationIdHandler);
 
   app.use('/mykor/api/v1', router);
 };
