@@ -2,8 +2,44 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { getPostByUserId } from '../../lib/repository/post-repository.js';
+import { getAllPosts, getPostByUserId } from '../../lib/repository/post-repository.js';
 import { consoleBar, resSend, timeLog } from '../../config/common.js';
+
+// -------------getAllPostsHandler---------------
+/**
+ * @swagger
+ * /posts:
+ *   get:
+ *     summary: 모든 게시글 정보 리턴
+ *     description: 모든 게시글 정보 리턴
+ *     responses:
+ *       200:
+ *         description: List of users retrieved successfully
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
+// -------------getAllPostsHandler---------------
+
+const getAllPostsHandler = async (req, res) => {
+  const results = {};
+  results.result = true;
+  results.error = [];
+  results.posts = [];
+
+  try {
+    await getAllPosts(results);
+  } catch (err) {
+    results.result = false;
+    results.error.push('Handler Error');
+  }
+
+  res.send(results);
+  consoleBar();
+  timeLog('[GET][/posts] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
+};
+
 
 // -------------getPostByUserIdHandler---------------
 /**
@@ -51,4 +87,4 @@ const getPostByUserIdHandler = async (req, res) => {
   timeLog('[GET][/users/:userId/posts] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
 };
 
-export { getPostByUserIdHandler };
+export { getAllPostsHandler, getPostByUserIdHandler };
