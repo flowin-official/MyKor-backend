@@ -2,7 +2,7 @@
 import dotenv, { config } from 'dotenv';
 dotenv.config();
 
-import { getAllPosts, getPostByLocationId, getPostByUserId } from '../../lib/repository/post-repository.js';
+import { getAllPosts, getPostByLocationId, postPostByLocationId, getPostByUserId } from '../../lib/repository/post-repository.js';
 import { consoleBar, resSend, timeLog } from '../../config/common.js';
 
 // -------------getAllPostsHandler---------------
@@ -115,9 +115,7 @@ const getAllPostsHandler = async (req, res) => {
  *     tags:
  *       - posts 
 */
-
 // -------------getPostByLocationIdHandler---------------
-
 
 const getPostByLocationIdHandler = async (req, res) => {
   const locationId = req.params.locationId;
@@ -151,7 +149,88 @@ const getPostByLocationIdHandler = async (req, res) => {
   consoleBar();
   timeLog('[GET][/posts/:locationId] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
 };
+// -------------postPostByLocationIdHandler---------------
+/**
+ * @swagger
+ * /posts/{locationId}:
+ *   post:
+ *     summary: 특정 지역에 게시글 작성 
+ *     description: 특정 지역에 게시글 작성 
+ *     parameters:
+ *       - in: path
+ *         name: locationId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 지역 Id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - postTag
+ *               - postTitle
+ *               - postContent
+ *               - postAuthorId
+ *             properties:
+ *               postTag:
+ *                 type: integer
+ *                 description: 게시글 태그Id (1~5)
+ *                 example: 1
+ *               postTitle:
+ *                 type: string
+ *                 description: 게시글 제목
+ *                 example: 제목1
+ *               postContent:
+ *                 type: string
+ *                 description: 게시글 내용
+ *                 example: 마이콜 최고에요 ~
+ *               postAuthorId:
+ *                 type: string
+ *                 description: 작성자 유저Id
+ *                 example: 6646bd73c01355f9d6592aa1
+ *               postImages:
+ *                 type: array
+ *                 items: 
+ *                   type: string
+ *                 description: 게시글 이미지 url
+ *                 example: ["http://example1.com","http://example2.com"]
+ *     responses:
+ *       201:
+ *         description: Post created successfully
+ *       400:
+ *         description: Bad request, invalid input data
+ *       404:
+ *         description: User not found or no posts associated with the user
+ *       500:
+ *         description: Internal server error
+ *     tags:
+ *       - posts 
+*/
+// -------------post
 
+
+const postPostByLocationIdHandler = async (req, res) => {
+  const locationId = req.params.locationId;
+  const body = req.body;
+
+  const results = {};
+  results.result = true;
+  results.error = [];
+
+  try {
+    await postPostByLocationId(results, locationId, body);
+  } catch (err) {
+    results.result = false;
+    results.error.push('Handler Error');
+  }
+
+  res.send(results);
+  consoleBar();
+  timeLog('[POST][/posts/:locationId] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
+};
 
 // -------------getPostByUserIdHandler---------------
 /**
@@ -174,12 +253,10 @@ const getPostByLocationIdHandler = async (req, res) => {
  *         description: User not found or no posts associated with the user
  *       500:
  *         description: Internal server error
-  *     tags:
+ *     tags:
  *       - users
  */
-
 // -------------getPostByUserIdHandler---------------
-
 
 const getPostByUserIdHandler = async (req, res) => {
   const userId = req.params.userId;
@@ -201,4 +278,4 @@ const getPostByUserIdHandler = async (req, res) => {
   timeLog('[GET][/users/:userId/posts] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
 };
 
-export { getAllPostsHandler, getPostByLocationIdHandler, getPostByUserIdHandler };
+export { getAllPostsHandler, getPostByLocationIdHandler, postPostByLocationIdHandler, getPostByUserIdHandler };
