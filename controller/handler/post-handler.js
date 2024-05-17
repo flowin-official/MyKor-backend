@@ -25,6 +25,11 @@ import { consoleBar, resSend, timeLog } from '../../config/common.js';
  *         required: false
  *         type: integer
  *         maximum: 1000
+ *       - in: query
+ *         name: tagId
+ *         description: 태그 Id (1~5)
+ *         required: false
+ *         type: integer
  *     responses:
  *       200:
  *         description: List of posts retrieved successfully
@@ -46,6 +51,7 @@ const getAllPostsHandler = async (req, res) => {
 
   const page = parseInt(req.query.page);
   const unit = parseInt(req.query.unit);
+  const tagId = parseInt(req.query.tagId);
 
   const skip = (page - 1) * unit;
 
@@ -57,7 +63,7 @@ const getAllPostsHandler = async (req, res) => {
   }
 
   try {
-    await getAllPosts(results, skip, unit);
+    await getAllPosts(results, skip, unit, tagId);
   } catch (err) {
     results.result = false;
     results.error.push('Handler Error');
