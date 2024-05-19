@@ -2,7 +2,7 @@
 import dotenv, { config } from 'dotenv';
 dotenv.config();
 
-import { getAllPosts, getPostByLocationId, postPostByLocationId, getPostByUserId, getPostbyPostId } from '../../lib/repository/post-repository.js';
+import { getAllPosts, getPostByLocationId, postPostByLocationId, getPostByUserId, deletePostByPostId, getPostByPostId } from '../../lib/repository/post-repository.js';
 import { consoleBar, resSend, timeLog } from '../../config/common.js';
 
 // -------------getAllPostsHandler---------------
@@ -267,7 +267,7 @@ const getPostByPostIdHandler = async (req, res) => {
   results.posts = [];
 
   try {
-    await getPostbyPostId(results, postId);
+    await getPostByPostId(results, postId);
   } catch (err) {
     results.result = false;
     results.error.push("Handler Error");
@@ -276,6 +276,51 @@ const getPostByPostIdHandler = async (req, res) => {
   res.send(results);
   consoleBar();
   timeLog('[GET][/posts/:postId] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
+};
+
+// -------------deletePostByPostIdHandler---------------
+/**
+ * @swagger
+ * /posts/{postId}:
+ *   delete:
+ *     summary: 특정 게시글 삭제
+ *     description: 특정 게시글 삭제
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 게시글 Id
+ *     responses:
+ *       200:
+ *         description: Post deleted successfully
+ *       404:
+ *         description: Post not found
+ *       500:
+ *         description: Internal server error
+ *     tags:
+ *       - posts
+ */
+// -------------deletePostByPostIdHandler---------------
+
+const deletePostByPostIdHandler = async (req, res) => {
+  const postId = req.params.postId;
+
+  const results = {};
+  results.result = true;
+  results.error = [];
+
+  try {
+    await deletePostByPostId(results, postId);
+  } catch (err) {
+    results.result = false;
+    results.error.push("Handler Error");
+  }
+
+  res.send(results);
+  consoleBar();
+  timeLog('[DELETE][/posts/:postId] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
 };
 
 // -------------getPostByUserIdHandler---------------
@@ -324,4 +369,4 @@ const getPostByUserIdHandler = async (req, res) => {
   timeLog('[GET][/users/:userId/posts] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
 };
 
-export { getAllPostsHandler, getPostByLocationIdHandler, postPostByLocationIdHandler, getPostByPostIdHandler, getPostByUserIdHandler };
+export { getAllPostsHandler, getPostByLocationIdHandler, postPostByLocationIdHandler, getPostByPostIdHandler, deletePostByPostIdHandler, getPostByUserIdHandler };
