@@ -2,7 +2,7 @@
 import dotenv, { config } from 'dotenv';
 dotenv.config();
 
-import { getAllPosts, getPostByLocationId, postPostByLocationId, getPostByUserId } from '../../lib/repository/post-repository.js';
+import { getAllPosts, getPostByLocationId, postPostByLocationId, getPostByUserId, getPostbyPostId } from '../../lib/repository/post-repository.js';
 import { consoleBar, resSend, timeLog } from '../../config/common.js';
 
 // -------------getAllPostsHandler---------------
@@ -209,7 +209,7 @@ const getPostByLocationIdHandler = async (req, res) => {
  *     tags:
  *       - posts 
 */
-// -------------post
+// -------------postPostByLocationIdHandler---------------
 
 
 const postPostByLocationIdHandler = async (req, res) => {
@@ -232,6 +232,52 @@ const postPostByLocationIdHandler = async (req, res) => {
   timeLog('[POST][/posts/:locationId] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
 };
 
+// -------------getPostByPostIdHandler---------------
+/**
+ * @swagger
+ * /posts/{postId}:
+ *   get:
+ *     summary: 특정 게시글 리턴
+ *     description: 특정 게시글 리턴
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 게시글 Id
+ *     responses:
+ *       200:
+ *         description: List of posts retrieved successfully
+ *       404:
+ *         description: User not found or no posts associated with the user
+ *       500:
+ *         description: Internal server error
+ *     tags:
+ *       - posts
+ */
+// -------------getPostByPostIdHandler---------------
+
+const getPostByPostIdHandler = async (req, res) => {
+  const postId = req.params.postId;
+
+  const results = {};
+  results.result = true;
+  results.error = [];
+  results.posts = [];
+
+  try {
+    await getPostbyPostId(results, postId);
+  } catch (err) {
+    results.result = false;
+    results.error.push("Handler Error");
+  }
+
+  res.send(results);
+  consoleBar();
+  timeLog('[GET][/posts/:postId] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
+};
+
 // -------------getPostByUserIdHandler---------------
 /**
  * @swagger
@@ -245,7 +291,7 @@ const postPostByLocationIdHandler = async (req, res) => {
  *         schema:
  *           type: string
  *         required: true
- *         description: 게시글 Id
+ *         description: 유저 Id
  *     responses:
  *       200:
  *         description: List of posts retrieved successfully
@@ -278,4 +324,4 @@ const getPostByUserIdHandler = async (req, res) => {
   timeLog('[GET][/users/:userId/posts] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
 };
 
-export { getAllPostsHandler, getPostByLocationIdHandler, postPostByLocationIdHandler, getPostByUserIdHandler };
+export { getAllPostsHandler, getPostByLocationIdHandler, postPostByLocationIdHandler, getPostByPostIdHandler, getPostByUserIdHandler };
