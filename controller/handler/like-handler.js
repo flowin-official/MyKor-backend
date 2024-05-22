@@ -41,7 +41,7 @@ import { consoleBar, resSend, timeLog } from '../../config/common.js';
  *       500:
  *         description: Internal server error
  *     tags:
- *       - posts 
+ *       - like 
 */
 // -------------postLikeHandler---------------
 
@@ -54,18 +54,16 @@ const postLikeHandler = async (req, res) => {
   results.error = [];
 
   try {
-    await postPostLikeCount(results, postId);
-    // 게시글 좋아요 +1
-    try {
-      await postUserLikePost(results, userId, postId);
-      // 유저의 좋아하는 게시글에 postId 추가
-    } catch (err) {
-      results.result = false;
-      results.error.push('Handler - user liked post Error');
+    // 이미 유저가 좋아하는지 확인
+    await postUserLikePost(results, userId, postId);
+
+    if (results.result) {
+      // 이미 좋아한게 아니면 like +1
+      await postPostLikeCount(results, postId);
     }
   } catch (err) {
     results.result = false;
-    results.error.push('Handler - post like Error');
+    results.error.push('Handler Error');
   }
 
   res.send(results);
