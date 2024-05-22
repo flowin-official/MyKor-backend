@@ -2,7 +2,8 @@
 import dotenv, { config } from 'dotenv';
 dotenv.config();
 
-import { getAllPosts, getPostByLocationId, postPostByLocationId, getPostByUserId, deletePostByPostId, getPostByPostId } from '../../lib/repository/post-repository.js';
+import { getAllPosts, getPostByLocationId, postPostByLocationId, 
+  getPostByUserId, deletePostByPostId, getPostByPostId } from '../../lib/repository/post-repository.js';
 import { consoleBar, resSend, timeLog } from '../../config/common.js';
 
 // -------------getAllPostsHandler---------------
@@ -369,4 +370,5 @@ const getPostByUserIdHandler = async (req, res) => {
   timeLog('[GET][/users/:userId/posts] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
 };
 
-export { getAllPostsHandler, getPostByLocationIdHandler, postPostByLocationIdHandler, getPostByPostIdHandler, deletePostByPostIdHandler, getPostByUserIdHandler };
+export { getAllPostsHandler, getPostByLocationIdHandler, postPostByLocationIdHandler, 
+  getPostByPostIdHandler, deletePostByPostIdHandler, getPostByUserIdHandler };
