@@ -2,8 +2,8 @@
 import dotenv, { config } from 'dotenv';
 dotenv.config();
 
-import { postPostLikeCount } from '../../lib/repository/post-repository.js';
-import { postUserLikePost } from '../../lib/repository/user-repository.js';
+import { getPostsById, postPostLikeCount } from '../../lib/repository/post-repository.js';
+import { getUserLikePost, postUserLikePost } from '../../lib/repository/user-repository.js';
 import { consoleBar, resSend, timeLog } from '../../config/common.js';
 
 // -------------postLikeHandler---------------
@@ -71,4 +71,58 @@ const postLikeHandler = async (req, res) => {
   timeLog('[POST][/like] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
 };
 
-export { postLikeHandler };
+// -------------getLikeHandler---------------
+/**
+ * @swagger
+ * /like:
+ *   get:
+ *     summary: 특정 유저가 좋아요한 게시글 정보 리턴
+ *     description: 특정 유저가 좋아요한 게시글 정보 리턴
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 유저 Id
+ *     responses:
+ *       200:
+ *         description: List of posts retrieved successfully
+ *       404:
+ *         description: User not found or no posts associated with the user
+ *       500:
+ *         description: Internal server error
+ *     tags:
+ *       - like
+ */
+// -------------getLikeHandler---------------
+
+const getLikeHandler = async (req, res) => {
+  const userId = req.query.userId;
+
+  const results = {};
+  results.result = true;
+  results.error = [];
+
+  try {
+    await getUserLikePost(results, userId);
+    if (results.user && results.user.likedPostId.length > 0) {
+      await getPostsById(results, results.user.likedPostId);
+    } else if (results.user) {
+      results.result = false;
+      results.error.push("User has no liked posts");
+    } else {
+      results.result = false;
+      results.error.push("User not found");
+    }
+  } catch (err) {
+    results.result = false;
+    results.error.push('Handler Error');
+  }
+
+  res.send(results);
+  consoleBar();
+  timeLog('[GET][/like] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
+}
+
+export { postLikeHandler, getLikeHandler };
