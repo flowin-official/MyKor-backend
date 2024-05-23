@@ -12,7 +12,7 @@ const setupSwagger = (app, serverPort) => {
     definition: {
       openapi: '3.0.0',
       info: {
-        title: 'MyKor API',
+        title: 'MyKor-beta API',
         version: '1.0.0',
         description: 'API documentation for the MyKor application',
       },

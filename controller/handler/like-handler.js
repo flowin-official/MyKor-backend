@@ -2,8 +2,8 @@
 import dotenv, { config } from 'dotenv';
 dotenv.config();
 
-import { getPostsById, postPostLikeCount } from '../../lib/repository/post-repository.js';
-import { getUserLikePost, postUserLikePost } from '../../lib/repository/user-repository.js';
+import { deleteDecrementPostLikeCount, getPostsById, postPostLikeCount } from '../../lib/repository/post-repository.js';
+import { deleteUserLikePost, getUserLikePost, postUserLikePost } from '../../lib/repository/user-repository.js';
 import { consoleBar, resSend, timeLog } from '../../config/common.js';
 
 // -------------postLikeHandler---------------
@@ -123,6 +123,64 @@ const getLikeHandler = async (req, res) => {
   res.send(results);
   consoleBar();
   timeLog('[GET][/like] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
-}
+};
 
-export { postLikeHandler, getLikeHandler };
+// -------------deleteLikeHandler---------------
+/**
+ * @swagger
+ * /like:
+ *   delete:
+ *     summary: 특정 유저의 특정 게시글 좋아요 취소
+ *     description: 특정 유저의 특정 게시글 좋아요 취소
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 유저 Id
+  *       - in: query
+ *         name: postId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 게시글 Id
+ *     responses:
+ *       200:
+ *         description: Post deleted successfully
+ *       404:
+ *         description: Post not found
+ *       500:
+ *         description: Internal server error
+ *     tags:
+ *       - like
+ */
+// -------------deleteLikeHandler---------------
+
+const deleteLikeHandler = async (req, res) => {
+  const userId = req.query.userId;
+  const postId = req.query.postId;
+
+  const results = {};
+  results.result = true;
+  results.error = [];
+
+  try {
+    await deleteUserLikePost(results, userId, postId);
+    if (results.user) {
+      await deleteDecrementPostLikeCount(results, postId);
+    } else {
+      results.result = false;
+      results.error.push('User not found or post not liked by user');
+    }
+  } catch (err) {
+    results.result = false;
+    results.error.push("Handler Error");
+  }
+
+  res.send(results);
+  consoleBar();
+  timeLog('[DELETE][/like] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
+};
+
+export { postLikeHandler, getLikeHandler, deleteLikeHandler };
