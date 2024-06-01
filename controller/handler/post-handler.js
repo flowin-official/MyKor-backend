@@ -265,7 +265,6 @@ const getPostByPostIdHandler = async (req, res) => {
   const results = {};
   results.result = true;
   results.error = [];
-  results.posts = [];
 
   try {
     await getPostByPostId(results, postId);
