@@ -27,6 +27,4 @@ jobs:
             git pull https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/flowin-official/MyKor-backend.git
 
             # 의존성 설치 및 애플리케이션 시작
-            npm install
-            pm2 stop all || true
-            pm2 start mykor.js
+            pm2 restart
