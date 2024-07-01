@@ -22,7 +22,7 @@ const setupSwagger = (app, serverPort) => {
         },
       ],
     },
-    apis: ['./controller/handler/*.js', './controller/*.js'],
+    apis: ['./controller/handler/user-handler.js', './controller/system.js','./controller/user-repository.js'],
   };
 
   const specs = swaggerJsdoc(options);

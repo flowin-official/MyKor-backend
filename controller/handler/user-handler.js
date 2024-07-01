@@ -70,7 +70,6 @@ const getAllUsersHandler = async (req, res) => {
 
 const getUserByIdHandler = async (req, res) => {
   const userId = req.params.userId;
-  console.log(userId);
 
   const results = {};
   results.result = true;
