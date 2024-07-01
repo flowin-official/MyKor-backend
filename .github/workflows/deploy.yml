@@ -25,30 +25,6 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            node -v
-            npm -v
-
-            # Node.js 및 npm 경로 확인
-            NODE_PATH=$(which node)
-            NPM_PATH=$(which npm)
-
-            echo "Node.js path: $NODE_PATH"
-            echo "NPM path: $NPM_PATH"
-
-            # Node.js 및 npm 경로가 없다면 추가
-            if [ -z "$NODE_PATH" ] || [ -z "$NPM_PATH" ]; then
-              echo "Node.js or npm is not installed. Exiting."
-              exit 1
-            fi
-
-            # 환경 변수 설정
-            export PATH=$PATH:$(dirname $NODE_PATH)
-            export PATH=$PATH:$(dirname $NPM_PATH)
-
-            # 경로 재확인
-            echo "Updated Node.js path: $(which node)"
-            echo "Updated NPM path: $(which npm)"
-
             # 리포지토리 디렉토리로 이동
             cd ~/MyKor-backend
 
