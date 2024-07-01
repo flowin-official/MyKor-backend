@@ -20,19 +20,18 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # 환경 변수 설정
-            export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v22.1.0/bin/node
-            export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v22.1.0/bin/npm
-
-            # 경로 재확인
-            echo "Updated Node.js path: $(which node)"
-            echo "Updated NPM path: $(which npm)"
-
             # 리포지토리 디렉토리로 이동
             cd ~/MyKor-backend
 
             # 리포지토리 pull
             git pull https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/flowin-official/MyKor-backend.git
+
+            # Node.js와 npm 설치 확인
+            if ! command -v node &> /dev/null
+            then
+              curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+            fi
 
             # 의존성 설치 및 애플리케이션 시작
             npm install
