@@ -20,16 +20,9 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Node.js 및 npm 경로 확인
-            NODE_PATH=$(which node)
-            NPM_PATH=$(which npm)
-
-            echo "Node.js path: $NODE_PATH"
-            echo "NPM path: $NPM_PATH"
-
             # 환경 변수 설정
-            export PATH=$PATH:$(dirname $NODE_PATH)
-            export PATH=$PATH:$(dirname $NPM_PATH)
+            export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v22.1.0/bin/node
+            export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v22.1.0/bin/npm
 
             # 경로 재확인
             echo "Updated Node.js path: $(which node)"
