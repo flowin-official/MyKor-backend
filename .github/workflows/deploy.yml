@@ -24,7 +24,7 @@ jobs:
             cd ~/MyKor-backend
 
             # 리포지토리 pull
-            git pull https://RootPark:${{ secrets.GIT_TOKEN }}@github.com/RootPark/MyKor-backend.git
+            git pull https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/flowin-official/MyKor-backend.git
 
             # 의존성 설치 및 애플리케이션 시작
             npm install
