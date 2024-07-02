@@ -88,4 +88,144 @@ const getUserByIdHandler = async (req, res) => {
   timeLog('[GET][/users/:userId] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
 };
 
-export { getAllUsersHandler, getUserByIdHandler };
+// -------------postUserKakaoHandler---------------
+/**
+ * @swagger
+ * /users/kakao:
+ *   post:
+ *     summary: 카카오 유저 신규 가입
+ *     description: 카카오 유저 신규 가입
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - kakaoUserCode
+ *               - userName
+ *               - userEmail
+ *             properties:
+ *               kakaoUserCode:
+ *                 type: string
+ *                 description: 카카오 유저 코드
+ *                 example: 11234
+ *               userName:
+ *                 type: string
+ *                 description: 유저 이름
+ *                 example: 박근원
+ *               userEmail:
+ *                 type: string
+ *                 description: 유저 이메일
+ *                 example: rmsdnjs518@gmail.com
+ *     responses:
+ *       201:
+ *         description: Post created successfully
+ *       400:
+ *         description: Bad request, invalid input data
+ *       404:
+ *         description: User not found or no posts associated with the user
+ *       500:
+ *         description: Internal server error
+ *     tags:
+ *       - users
+*/
+// -------------postUserKakaoHandler---------------
+
+const postUserKakaoHandler = async (req, res) => {
+  const body = req.query.body;
+
+  const results = {};
+  results.result = true;
+  results.error = [];
+
+  try {
+    //TODO jwt 생성 및 kakaoRefreshToken 저장
+    try {
+      //TODO 유저 정보 저장
+    } catch (err) {
+
+    }
+  } catch (err) {
+
+  }
+
+  res.send(results); 
+  consoleBar();
+  timeLog('[POST][/users/kakao] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
+};
+
+// -------------postUserAppleHandler---------------
+/**
+ * @swagger
+ * /users/apple:
+ *   post:
+ *     summary: 애플 유저 신규 가입
+ *     description: 애플 유저 신규 가입
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - state
+ *               - code
+ *               - id_token
+ *               - user
+ *             properties:
+ *               state:
+ *                 type: string
+ *                 description: 애플 로그인 state
+ *                 example: 404
+ *               code:
+ *                 type: string
+ *                 description: 애플 로그인 code
+ *                 example: 111333
+ *               id_token:
+ *                 type: string
+ *                 description: 애플 로그인 id_token
+ *                 example: 123456
+ *               user:
+ *                 type: string
+ *                 description: 애플 로그인 user
+ *                 example: rootPark
+ *     responses:
+ *       201:
+ *         description: Post created successfully
+ *       400:
+ *         description: Bad request, invalid input data
+ *       404:
+ *         description: User not found or no posts associated with the user
+ *       500:
+ *         description: Internal server error
+ *     tags:
+ *       - users
+*/
+// -------------postUserAppleHandler---------------
+
+const postUserAppleHandler = async (req, res) => {
+  const body = req.query.body;
+
+  const results = {};
+  results.result = true;
+  results.error = [];
+
+  try {
+    //TODO jwt 생성 및 kakaoRefreshToken 저장
+    try {
+      //TODO 유저 정보 저장
+    } catch (err) {
+
+    }
+  } catch (err) {
+
+  }
+
+  res.send(results); 
+  consoleBar();
+  timeLog('[POST][/users/apple] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
+};
+
+
+export { getAllUsersHandler, getUserByIdHandler, postUserKakaoHandler, postUserAppleHandler };
