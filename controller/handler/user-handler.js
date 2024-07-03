@@ -212,7 +212,7 @@ const postUserAppleHandler = async (req, res) => {
   results.error = [];
 
   try {
-    //TODO jwt 생성 및 kakaoRefreshToken 저장
+    //TODO jwt 생성 및 appleRefreshToken 저장
     try {
       //TODO 유저 정보 저장
     } catch (err) {
