@@ -140,17 +140,30 @@ const postUserKakaoHandler = async (req, res) => {
   results.error = [];
 
   try {
-    //TODO jwt 생성 및 kakaoRefreshToken 저장
+    //TODO 유저 디비 생성
     try {
-      //TODO 유저 정보 저장
+      //TODO jwt 생성
+      try {
+        //TODO kakaoRefreshToken 저장
+        try {
+          //TODO 유저 정보 저장
+        } catch (err) {
+
+        }
+      } catch (err) {
+
+      }
+
     } catch (err) {
 
     }
+
   } catch (err) {
 
   }
 
-  res.send(results); 
+
+  res.send(results);
   consoleBar();
   timeLog('[POST][/users/kakao] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
 };
@@ -222,7 +235,7 @@ const postUserAppleHandler = async (req, res) => {
 
   }
 
-  res.send(results); 
+  res.send(results);
   consoleBar();
   timeLog('[POST][/users/apple] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
 };
