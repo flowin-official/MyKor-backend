@@ -141,18 +141,12 @@ const postUserKakaoHandler = async (req, res) => {
   results.error = [];
 
   try {
-    // Base 유저 디비 생성
+    // Base 유저 디비 생성, 정보 저장
     await postUser(results, body);
     try {
       // Jwt 생성
-      // await generateKakaoRefreshToken(results);
+      await generateKakaoRefreshToken(results);
       await generateKakaoAccessToken(results);
-      try {
-        // kakaoRefreshToken, 유저 정보 저장
-      } catch (err) {
-        results.result = false;
-        results.error.push('user data save error');
-      }
     } catch (err) {
       results.result = false;
       results.error.push('generate token error');
