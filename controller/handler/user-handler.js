@@ -2,8 +2,9 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { getAllUsers, getUserById } from '../../lib/repository/user-repository.js';
+import { getAllUsers, getUserById, postUser } from '../../lib/repository/user-repository.js';
 import { consoleBar, resSend, timeLog } from '../../config/common.js';
+import { generateKakaoAccessToken, generateKakaoRefreshToken } from '../../middlewares/login/auth.js';
 
 // -------------getAllUsersHandler---------------
 /**
@@ -133,35 +134,33 @@ const getUserByIdHandler = async (req, res) => {
 // -------------postUserKakaoHandler---------------
 
 const postUserKakaoHandler = async (req, res) => {
-  const body = req.query.body;
+  const body = req.body;
 
   const results = {};
   results.result = true;
   results.error = [];
 
   try {
-    //TODO 유저 디비 생성
+    // Base 유저 디비 생성
+    await postUser(results, body);
     try {
-      //TODO jwt 생성
+      // Jwt 생성
+      // await generateKakaoRefreshToken(results);
+      await generateKakaoAccessToken(results);
       try {
-        //TODO kakaoRefreshToken 저장
-        try {
-          //TODO 유저 정보 저장
-        } catch (err) {
-
-        }
+        // kakaoRefreshToken, 유저 정보 저장
       } catch (err) {
-
+        results.result = false;
+        results.error.push('user data save error');
       }
-
     } catch (err) {
-
+      results.result = false;
+      results.error.push('generate token error');
     }
-
   } catch (err) {
-
+    results.result = false;
+    results.error.push('generate base user error');
   }
-
 
   res.send(results);
   consoleBar();
