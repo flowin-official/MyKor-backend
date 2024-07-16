@@ -4,7 +4,7 @@ dotenv.config();
 
 import { getAllUsers, getUserById, postUser } from '../../lib/repository/user-repository.js';
 import { consoleBar, resSend, timeLog } from '../../config/common.js';
-import { generateKakaoAccessToken, generateKakaoRefreshToken } from '../../middlewares/login/auth.js';
+import { generateAppleRefreshToken, generateKakaoAccessToken, generateKakaoRefreshToken } from '../../middlewares/login/auth.js';
 
 // -------------getAllUsersHandler---------------
 /**
@@ -175,27 +175,22 @@ const postUserKakaoHandler = async (req, res) => {
  *           schema:
  *             type: object
  *             required:
- *               - state
- *               - code
- *               - id_token
- *               - user
+ *               - appleId
+ *               - userName
+ *               - userEmail
  *             properties:
- *               state:
+ *               appleId:
  *                 type: string
- *                 description: 애플 로그인 state
- *                 example: 404
- *               code:
+ *                 description: 애플 유저 코드
+ *                 example: 11234
+ *               userName:
  *                 type: string
- *                 description: 애플 로그인 code
- *                 example: 111333
- *               id_token:
+ *                 description: 유저 이름
+ *                 example: 박근원
+ *               userEmail:
  *                 type: string
- *                 description: 애플 로그인 id_token
- *                 example: 123456
- *               user:
- *                 type: string
- *                 description: 애플 로그인 user
- *                 example: rootPark
+ *                 description: 유저 이메일
+ *                 example: rmsdnjs518@gmail.com
  *     responses:
  *       201:
  *         description: Post created successfully
@@ -211,21 +206,26 @@ const postUserKakaoHandler = async (req, res) => {
 // -------------postUserAppleHandler---------------
 
 const postUserAppleHandler = async (req, res) => {
-  const body = req.query.body;
+  const body = req.body;
 
   const results = {};
   results.result = true;
   results.error = [];
 
   try {
-    //TODO jwt 생성 및 appleRefreshToken 저장
+    // Base 유저 디비 생성, 정보 저장
+    await postUser(results, body);
     try {
-      //TODO 유저 정보 저장
+      // Jwt 생성
+      await generateAppleRefreshToken(results);
+      await generateKakaoAccessToken(results);
     } catch (err) {
-
+      results.result = false;
+      results.error.push('generate token error');
     }
   } catch (err) {
-
+    results.result = false;
+    results.error.push('generate base user error');
   }
 
   res.send(results);
