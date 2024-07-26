@@ -15,13 +15,13 @@ const setupRoutes = (app) => {
   router.route('/users/kakao').post(postUserKakaoHandler);
   router.route('/users/apple').post(postUserAppleHandler);
 
-  // router.route('/users/:userId/posts').get(getPostByUserIdHandler);
+  router.route('/users/:userId/posts').get(getPostByUserIdHandler);
 
-  // router.route('/posts').get(getAllPostsHandler);
-  // router.route('/posts/:postId').get(getPostByPostIdHandler);
-  // router.route('/posts/:postId').delete(deletePostByPostIdHandler);
-  // router.route('/posts/:locationId').get(getPostByLocationIdHandler);
-  // router.route('/posts/:locationId').post(postPostByLocationIdHandler);
+  router.route('/posts').get(getAllPostsHandler);
+  router.route('/posts/:postId').get(getPostByPostIdHandler);
+  router.route('/posts/:postId').delete(deletePostByPostIdHandler);
+  router.route('/posts/:locationId').get(getPostByLocationIdHandler);
+  router.route('/posts/:locationId').post(postPostByLocationIdHandler);
 
   // router.route('/like').post(postLikeHandler);
   // router.route('/like').get(getLikeHandler);
