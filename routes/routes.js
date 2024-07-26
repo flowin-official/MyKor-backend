@@ -4,6 +4,7 @@ import { getAllUsersHandler, getUserByIdHandler, postUserKakaoHandler, postUserA
 import { deletePostByPostIdHandler, getAllPostsHandler, getPostByLocationIdHandler, 
   getPostByPostIdHandler, getPostByUserIdHandler, postPostByLocationIdHandler } from '../controller/handler/post-handler.js';
 import { deleteLikeHandler, postLikeHandler, getLikeHandler } from '../controller/handler/like-handler.js'
+import { regionReguestHandler } from '../controller/handler/region-request-handler.js';
 
 const setupRoutes = (app) => {
   const router = express.Router();
@@ -26,6 +27,8 @@ const setupRoutes = (app) => {
   // router.route('/like').post(postLikeHandler);
   // router.route('/like').get(getLikeHandler);
   // router.route('/like').delete(deleteLikeHandler);
+
+  router.route('/region-request').post(regionReguestHandler);
 
   app.use('/mykor/api/v1', router);
 };
