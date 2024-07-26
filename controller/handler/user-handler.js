@@ -2,7 +2,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { getAllUsers, getUserById, postUser } from '../../lib/repository/user-repository.js';
+import { getAllUsers, getUserById, getUserByKakaoId, postUser } from '../../lib/repository/user-repository.js';
 import { consoleBar, resSend, timeLog } from '../../config/common.js';
 import { generateAppleRefreshToken, generateKakaoAccessToken, generateKakaoRefreshToken } from '../../middlewares/login/auth.js';
 
@@ -89,7 +89,7 @@ const getUserByIdHandler = async (req, res) => {
   timeLog('[GET][/users/:userId] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
 };
 
-// -------------postUserKakaoHandler---------------
+// -------------kakaoLogin---------------
 /**
  * @swagger
  * /users/kakao:
@@ -131,9 +131,9 @@ const getUserByIdHandler = async (req, res) => {
  *     tags:
  *       - users
 */
-// -------------postUserKakaoHandler---------------
+// -------------kakaoLogin---------------
 
-const postUserKakaoHandler = async (req, res) => {
+const kakaoLogin = async (req, res) => {
   const body = req.body;
 
   const results = {};
@@ -141,16 +141,23 @@ const postUserKakaoHandler = async (req, res) => {
   results.error = [];
 
   try {
-    // Base 유저 디비 생성, 정보 저장
-    await postUser(results, body);
+    // 카카오 유저 중복 체크
+    const existUser = await getUserByKakaoId(results, body.kakaoUserCode);
+    
+    // 유저 등록이 안되어있으면 Base 유저 디비 생성, 정보 저장
+    if (!existUser) {
+      await postUser(results, body);
+    }
+
+    // Jwt 생성
     try {
-      // Jwt 생성
       await generateKakaoRefreshToken(results);
       await generateKakaoAccessToken(results);
     } catch (err) {
       results.result = false;
       results.error.push('generate token error');
     }
+
   } catch (err) {
     results.result = false;
     results.error.push('generate base user error');
@@ -234,4 +241,4 @@ const postUserAppleHandler = async (req, res) => {
 };
 
 
-export { getAllUsersHandler, getUserByIdHandler, postUserKakaoHandler, postUserAppleHandler };
+export { getAllUsersHandler, getUserByIdHandler, kakaoLogin, postUserAppleHandler };
