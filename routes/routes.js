@@ -1,6 +1,6 @@
 import express from 'express';
 import { ping } from '../controller/system.js';
-import { getAllUsersHandler, getUserByIdHandler, postUserKakaoHandler, postUserAppleHandler } from '../controller/handler/user-handler.js';
+import { getAllUsersHandler, getUserByIdHandler, kakaoLogin, postUserAppleHandler } from '../controller/handler/user-handler.js';
 import { deletePostByPostIdHandler, getAllPostsHandler, getPostByLocationIdHandler, 
   getPostByPostIdHandler, getPostByUserIdHandler, postPostByLocationIdHandler } from '../controller/handler/post-handler.js';
 import { deleteLikeHandler, postLikeHandler, getLikeHandler } from '../controller/handler/like-handler.js'
@@ -12,7 +12,7 @@ const setupRoutes = (app) => {
 
   router.route('/users').get(getAllUsersHandler);
   router.route('/users/:userId').get(getUserByIdHandler);
-  router.route('/users/kakao').post(postUserKakaoHandler);
+  router.route('/users/kakao').post(kakaoLogin);
   router.route('/users/apple').post(postUserAppleHandler);
 
   // router.route('/users/:userId/posts').get(getPostByUserIdHandler);
