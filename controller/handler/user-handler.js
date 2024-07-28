@@ -1,10 +1,19 @@
-'use strict';
-import dotenv from 'dotenv';
+"use strict";
+import dotenv from "dotenv";
 dotenv.config();
 
-import { getAllUsers, getUserById, getUserByKakaoId, postUser } from '../../lib/repository/user-repository.js';
-import { consoleBar, resSend, timeLog } from '../../config/common.js';
-import { generateAppleRefreshToken, generateKakaoAccessToken, generateKakaoRefreshToken } from '../../middlewares/login/auth.js';
+import {
+  getAllUsers,
+  getUserById,
+  getUserByKakaoId,
+  postUser,
+} from "../../lib/repository/user-repository.js";
+import { consoleBar, resSend, timeLog } from "../../config/common.js";
+import {
+  generateAppleRefreshToken,
+  generateKakaoAccessToken,
+  generateKakaoRefreshToken,
+} from "../../middlewares/login/auth.js";
 
 // -------------getAllUsersHandler---------------
 /**
@@ -35,12 +44,17 @@ const getAllUsersHandler = async (req, res) => {
     await getAllUsers(results);
   } catch (err) {
     results.result = false;
-    results.error.push('Handler Error');
+    results.error.push("Handler Error");
   }
 
   res.send(results);
   consoleBar();
-  timeLog('[GET][/users] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
+  timeLog(
+    "[GET][/users] // " +
+      JSON.stringify(req.query) +
+      " // " +
+      JSON.stringify(results)
+  );
 };
 
 // -------------getUserByIdHandler---------------
@@ -81,12 +95,17 @@ const getUserByIdHandler = async (req, res) => {
     await getUserById(results, userId);
   } catch (err) {
     results.result = false;
-    results.error.push('Handler Error');
+    results.error.push("Handler Error");
   }
 
   res.send(results);
   consoleBar();
-  timeLog('[GET][/users/:userId] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
+  timeLog(
+    "[GET][/users/:userId] // " +
+      JSON.stringify(req.query) +
+      " // " +
+      JSON.stringify(results)
+  );
 };
 
 // -------------kakaoLogin---------------
@@ -105,7 +124,6 @@ const getUserByIdHandler = async (req, res) => {
  *             required:
  *               - kakaoUserCode
  *               - userName
- *               - userEmail
  *             properties:
  *               kakaoUserCode:
  *                 type: string
@@ -115,10 +133,6 @@ const getUserByIdHandler = async (req, res) => {
  *                 type: string
  *                 description: 유저 이름
  *                 example: 박근원
- *               userEmail:
- *                 type: string
- *                 description: 유저 이메일
- *                 example: rmsdnjs518@gmail.com
  *     responses:
  *       201:
  *         description: Post created successfully
@@ -130,7 +144,7 @@ const getUserByIdHandler = async (req, res) => {
  *         description: Internal server error
  *     tags:
  *       - users
-*/
+ */
 // -------------kakaoLogin---------------
 
 const kakaoLogin = async (req, res) => {
@@ -142,30 +156,34 @@ const kakaoLogin = async (req, res) => {
 
   try {
     // 카카오 유저 중복 체크
-    const existUser = await getUserByKakaoId(results, body.kakaoUserCode);
-    
+    await getUserByKakaoId(results, body.kakaoUserCode);
+
     // 유저 등록이 안되어있으면 Base 유저 디비 생성, 정보 저장
-    if (!existUser) {
-      await postUser(results, body);
+    if (!results.user) {
+      try {
+        await postUser(results, body);
+      } catch (err) {
+        results.result = false;
+        results.error.push("generate base user error");
+      }
     }
 
     // Jwt 생성
-    try {
-      await generateKakaoRefreshToken(results);
-      await generateKakaoAccessToken(results);
-    } catch (err) {
-      results.result = false;
-      results.error.push('generate token error');
-    }
-
+    generateKakaoRefreshToken(results);
+    generateKakaoAccessToken(results);
   } catch (err) {
     results.result = false;
-    results.error.push('generate base user error');
+    results.error.push("getUserByKakaoId error");
   }
 
   res.send(results);
   consoleBar();
-  timeLog('[POST][/users/kakao] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
+  timeLog(
+    "[POST][/users/kakao] // " +
+      JSON.stringify(req.query) +
+      " // " +
+      JSON.stringify(results)
+  );
 };
 
 // -------------postUserAppleHandler---------------
@@ -209,7 +227,7 @@ const kakaoLogin = async (req, res) => {
  *         description: Internal server error
  *     tags:
  *       - users
-*/
+ */
 // -------------postUserAppleHandler---------------
 
 const postUserAppleHandler = async (req, res) => {
@@ -228,17 +246,26 @@ const postUserAppleHandler = async (req, res) => {
       await generateKakaoAccessToken(results);
     } catch (err) {
       results.result = false;
-      results.error.push('generate token error');
+      results.error.push("generate token error");
     }
   } catch (err) {
     results.result = false;
-    results.error.push('generate base user error');
+    results.error.push("generate base user error");
   }
 
   res.send(results);
   consoleBar();
-  timeLog('[POST][/users/apple] // ' + JSON.stringify(req.query) + ' // ' + JSON.stringify(results));
+  timeLog(
+    "[POST][/users/apple] // " +
+      JSON.stringify(req.query) +
+      " // " +
+      JSON.stringify(results)
+  );
 };
 
-
-export { getAllUsersHandler, getUserByIdHandler, kakaoLogin, postUserAppleHandler };
+export {
+  getAllUsersHandler,
+  getUserByIdHandler,
+  kakaoLogin,
+  postUserAppleHandler,
+};
