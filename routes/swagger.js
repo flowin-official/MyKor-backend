@@ -1,3 +1,4 @@
+
 'use strict';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -22,7 +23,7 @@ const setupSwagger = (app, serverPort) => {
         },
       ],
     },
-    apis: ['./controller/handler/user-handler.js', './controller/system.js','./controller/user-repository.js'],
+    apis: ['./controller/handler/*.js'],
   };
 
   const specs = swaggerJsdoc(options);
