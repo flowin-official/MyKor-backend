@@ -1,13 +1,14 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 const generateKakaoAccessToken = async (results) => {
   const secrectKey = process.env.ACCESS_TOKEN_SECRET_KEY;
   const expiresIn = process.env.ACCESS_TOKEN_EXPIRES_IN;
 
+  const userId = results.user._id;
   const kakaoId = results.user.kakaoId;
   const userEmail = results.user.userEmail;
 
-  const payload = { kakaoId: kakaoId, userEmail: userEmail };
+  const payload = { userId: userId, kakaoId: kakaoId, userEmail: userEmail };
 
   try {
     const accessToken = jwt.sign(payload, secrectKey, { expiresIn: expiresIn });
@@ -22,13 +23,16 @@ const generateKakaoRefreshToken = async (results) => {
   const secrectKey = process.env.REFRESH_TOKEN_SECRET_KEY;
   const expiresIn = process.env.REFRESH_TOKEN_EXPIRES_IN;
 
+  const userId = results.user._id;
   const kakaoId = results.user.kakaoId;
   const userEmail = results.user.userEmail;
 
-  const payload = { kakaoId: kakaoId, userEmail: userEmail };
+  const payload = { userId: userId, kakaoId: kakaoId, userEmail: userEmail };
 
   try {
-    const refreshToken = jwt.sign(payload, secrectKey, { expiresIn: expiresIn });
+    const refreshToken = jwt.sign(payload, secrectKey, {
+      expiresIn: expiresIn,
+    });
     results.kakaoRefreshToken = refreshToken;
   } catch (err) {
     results.result = false;
@@ -63,9 +67,10 @@ const generateAppleRefreshToken = async (results) => {
 
   const payload = { appleId: appleId, userEmail: userEmail };
 
-
   try {
-    const refreshToken = jwt.sign(payload, secrectKey, { expiresIn: expiresIn });
+    const refreshToken = jwt.sign(payload, secrectKey, {
+      expiresIn: expiresIn,
+    });
     results.appleRefreshToken = refreshToken;
   } catch (err) {
     results.result = false;
@@ -73,4 +78,22 @@ const generateAppleRefreshToken = async (results) => {
   }
 };
 
-export { generateKakaoAccessToken, generateKakaoRefreshToken, generateAppleAccessToken, generateAppleRefreshToken };
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1]; // Bearer Token
+  if (!token) return res.sendStatus(401); // 토큰이 없으면
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY, (err, decoded) => {
+    if (err) return res.sendStatus(403); // 인증 실패
+    req.userId = decoded.userId; // 오른쪽은 payload 명칭
+    next();
+  });
+};
+
+export {
+  generateKakaoAccessToken,
+  generateKakaoRefreshToken,
+  generateAppleAccessToken,
+  generateAppleRefreshToken,
+  authenticateToken,
+};

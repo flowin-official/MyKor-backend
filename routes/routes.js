@@ -5,6 +5,7 @@ import {
   getUserByIdHandler,
   kakaoLogin,
   postUserAppleHandler,
+  getMemberInfo,
 } from "../controller/handler/user-handler.js";
 import {
   deletePostByPostIdHandler,
@@ -19,6 +20,7 @@ import {
   postLikeHandler,
   getLikeHandler,
 } from "../controller/handler/like-handler.js";
+import { authenticateToken } from "../middlewares/login/auth.js";
 
 const setupRoutes = (app) => {
   const router = express.Router();
@@ -29,6 +31,8 @@ const setupRoutes = (app) => {
   router.route("/users/:userId").get(getUserByIdHandler);
   router.route("/users/kakao").post(kakaoLogin);
   router.route("/users/apple").post(postUserAppleHandler);
+
+  router.route("/user").get(authenticateToken, getMemberInfo);
 
   router.route("/users/:userId/posts").get(getPostByUserIdHandler);
 

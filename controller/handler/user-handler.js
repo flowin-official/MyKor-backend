@@ -263,9 +263,34 @@ const postUserAppleHandler = async (req, res) => {
   );
 };
 
+const getMemberInfo = async (req, res) => {
+  const userId = req.userId; // 토큰 페이로드에서 추출한 Id임
+
+  const results = {};
+  results.result = true;
+  results.error = [];
+
+  try {
+    await getUserById(results, userId);
+  } catch (err) {
+    results.result = false;
+    results.error.push("getMemberInfo error");
+  }
+
+  res.send(results);
+  consoleBar();
+  timeLog(
+    "[GET][/user] // " +
+      JSON.stringify(req.query) +
+      " // " +
+      JSON.stringify(results)
+  );
+};
+
 export {
   getAllUsersHandler,
   getUserByIdHandler,
   kakaoLogin,
   postUserAppleHandler,
+  getMemberInfo,
 };
